@@ -13,7 +13,7 @@ import fiftyone as fo
 import argparse
 
 def main(arg):
-    classes = ['Backgroud',
+    classes = ['Background',
          'General trash',
          'Paper',
          'Paper pack',
