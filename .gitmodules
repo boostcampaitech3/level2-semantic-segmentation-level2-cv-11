@@ -1,6 +1,3 @@
-[submodule "mmsegmentation2"]
-	path = mmsegmentation2
-	url = https://github.com/open-mmlab/mmsegmentation.git
-[submodule "mmsegmentation3"]
-	path = mmsegmentation3
+[submodule "mmsegmentation"]
+	path = mmsegmentation
 	url = https://github.com/open-mmlab/mmsegmentation.git
