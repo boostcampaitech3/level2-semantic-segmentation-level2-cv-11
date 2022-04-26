@@ -3,7 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from util.metrics import add_hist, label_accuracy_score
 
-category_names = ['Backgroud',
+category_names = ['Background',
                   'General trash',
                   'Paper',
                   'Paper pack',

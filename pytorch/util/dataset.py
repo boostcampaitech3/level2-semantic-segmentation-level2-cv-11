@@ -4,7 +4,7 @@ import numpy as np
 from pycocotools.coco import COCO
 from torch.utils.data import Dataset
 
-category_names = ['Backgroud',
+category_names = ['Background',
                   'General trash',
                   'Paper',
                   'Paper pack',

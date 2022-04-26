@@ -5,7 +5,6 @@ pytorch
 │   ├── train.py
 │   └── validate.py
 ├── util
-│   ├── metrics.py
 │   ├── augmentation.py
 │   ├── dataset.py
 │   ├── model.py
@@ -67,10 +66,10 @@ python main.py --mode train --wandb_plot True --model fcn_resnet50
 
 ### Arguments
 - `--model`: torchvision.models의 모델(['fcn_resnet50', 'deeplabv3_resnet50']). `model.py`에서 커스텀하여 추가 가능
-- `--resize`: 입력 resolution(deafult=(512, 512))
+- `--resize`: 입력 resolution(default=(512, 512))
 - `--learning_rate`: 학습률(default=1e-4)
 - `--weight_decay`: L2 penalty(모델 weight의 제곱합을 loss항에 추가하여 weight가 지나치게 커지는 것을 방지한다. 오버피팅 방지 효과. deafult=1e-6)
-- `--num_epochs`: 학습할 Epoch 수(deafult=30)
+- `--num_epochs`: 학습할 Epoch 수(default=30)
 - `--num_workers`: Num workers(default=4)
 - `--batch_size`: 배치 크기(default=16)
 - `--device`: cuda
