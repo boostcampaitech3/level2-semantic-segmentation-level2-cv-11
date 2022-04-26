@@ -1,3 +1,26 @@
+## Project Structure
+```
+pytorch
+├── trainer
+│   ├── train.py
+│   └── validate.py
+├── util
+│   ├── metrics.py
+│   └── utils.py
+├── args.py
+├── augmentation.py
+├── dataset.py
+├── inference.py
+├── main.py
+├── model.py
+├── README.md
+├── class_dict.csv
+├── requirements.txt
+└── visualization.ipynb
+```
+
+---
+
 ## 환경 설정
 
 ### Installation
