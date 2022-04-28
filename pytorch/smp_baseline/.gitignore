@@ -1,5 +1,6 @@
 submission/
 saved/
+wandb/
 __pycache__
 .idea
 *.pth
