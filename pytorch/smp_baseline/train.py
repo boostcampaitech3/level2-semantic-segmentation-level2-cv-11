@@ -14,7 +14,7 @@ from utils import *
 warnings.filterwarnings('ignore')
 
 class_labels = {
-    0: "Backgroud",
+    0: "Background",
     1: "General trash",
     2: "Paper",
     3: "Paper pack",
@@ -38,6 +38,7 @@ def get_parser():
     parser.add_argument('--metric', action='store_true')
     parser.add_argument('--loss', action='store_true')
     parser.add_argument('--save-interval', default=1)
+    parser.add_argument('--wandb_plot', action='store_true')
     arg = parser.parse_args()
     return arg
 
@@ -56,14 +57,15 @@ def main():
     scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-4)
 
     # Wandb init
-    wandb.init(project="seg", entity="kbum0617", name=args.name)
-    wandb.config = {
-        "learning_rate": args.lr,
-        "encoder": args.encoder,
-        "epochs": args.epoch,
-        "batch_size": args.batch_size
-    }
-    wandb.watch(model)
+    if args.wandb_plot:
+        wandb.init(project="semantic-segmentation", entity="canvas11", name=f"NAME-{args.name}")
+        wandb.config = {
+            "learning_rate": args.lr,
+            "encoder": args.encoder,
+            "epochs": args.epoch,
+            "batch_size": args.batch_size
+        }
+        wandb.watch(model)
 
     device = args.device
     best_loss = 9999999.0
@@ -96,21 +98,22 @@ def main():
             train_f1_score += f1_score.item()
             train_recall += recall.item()
             train_precision += precision.item()
-
+            break
             pbar.set_postfix(
                 Train_Loss=f" {train_loss / (i + 1):.3f}",
                 Train_Iou=f" {train_miou_score / (i + 1):.3f}",
                 Train_Acc=f" {train_accuracy / (i + 1):.3f}",
             )
-        wandb.log({
-            'epoch': epoch,
-            'train/loss': train_loss / len(train_loader),
-            'train/miou_score': train_miou_score / len(train_loader),
-            'train/pixel_accuracy': train_accuracy / len(train_loader),
-            'train/train_f1_score': train_f1_score / len(train_loader),
-            'train/train_recall': train_recall / len(train_loader),
-            'train/train_precision': train_precision / len(train_loader),
-        })
+        if args.wandb_plot:
+            wandb.log({
+                'epoch': epoch,
+                'train/loss': train_loss / len(train_loader),
+                'train/miou_score': train_miou_score / len(train_loader),
+                'train/pixel_accuracy': train_accuracy / len(train_loader),
+                'train/train_f1_score': train_f1_score / len(train_loader),
+                'train/train_recall': train_recall / len(train_loader),
+                'train/train_precision': train_precision / len(train_loader),
+            })
         scheduler.step()
 
         val_loss, val_miou_score, val_accuracy = 0, 0, 0
@@ -144,7 +147,7 @@ def main():
                     Val_Acc=f" {val_accuracy / (i + 1):.3f}",
                 )
                 output = torch.argmax(output, dim=1).detach().cpu().numpy()
-                if args.viz_log == i:
+                if args.viz_log == i and args.wandb_plot:
                     wandb.log({
                         'visualize': wandb.Image(
                             image[0, :, :, :],
@@ -160,25 +163,34 @@ def main():
                             }
                         )
                     })
-            wandb.log({
-                'epoch': epoch,
-                'val/loss': val_loss / len(val_loader),
-                'val/miou_score': val_miou_score / len(val_loader),
-                'val/pixel_accuracy': val_accuracy / len(val_loader),
-                'val/f1_score': val_f1_score / len(val_loader),
-                'val/recall': val_recall / len(val_loader),
-                'val/precision': val_precision / len(val_loader),
-            })
+            if args.wandb_plot:
+                wandb.log({
+                    'epoch': epoch,
+                    'val/loss': val_loss / len(val_loader),
+                    'val/miou_score': val_miou_score / len(val_loader),
+                    'val/pixel_accuracy': val_accuracy / len(val_loader),
+                    'val/f1_score': val_f1_score / len(val_loader),
+                    'val/recall': val_recall / len(val_loader),
+                    'val/precision': val_precision / len(val_loader),
+                })
         # save_model
         if args.metric:
             if best_score < val_miou_score:
                 best_score = val_miou_score
-                ckpt_path = os.path.join(args.save_dir, 'best_miou.pth')
+                try:
+                    os.remove(ckpt_path)
+                except:
+                    pass
+                ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_miou_{best_score:.4f}.pth')
                 torch.save(model.state_dict(), ckpt_path)
         if not args.metric:
             if best_loss > val_loss:
                 best_loss = val_loss
-                ckpt_path = os.path.join(args.save_dir, 'best_loss.pth')
+                try:
+                    os.remove(ckpt_path)
+                except:
+                    pass
+                ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_loss_{best_loss:.4f}.pth')
                 torch.save(model.state_dict(), ckpt_path)
         if (epoch + 1) % args.save_interval == 0:
             ckpt_fpath = os.path.join(args.save_dir, 'latest.pth')
