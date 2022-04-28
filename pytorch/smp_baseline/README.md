@@ -2,7 +2,7 @@
 
 ### Train
 ```
-python train.py --config-dir [CONFIG YAML FILE] --name [MODEL_NAME] [--metric]
+python train.py --config-dir [CONFIG YAML FILE] --name [MODEL_NAME] [--metric] [--wandb_plot]
 ```
 
 ### File 내부 설명
