@@ -2,7 +2,6 @@ import os
 import cv2
 import numpy as np
 import albumentations as A
-import torch
 from torch.utils.data import Dataset, DataLoader
 from pycocotools.coco import COCO
 from albumentations.pytorch import ToTensorV2
@@ -19,8 +18,8 @@ def get_classname(class_id, cats):
 
 def get_transform(preprocessing_fn):
     train_transform = [
-        A.RandomResizedCrop(512, 512, (0.75, 1.0), p=0.5),
-        A.HorizontalFlip(p=0.5),
+        # A.RandomResizedCrop(512, 512, (0.75, 1.0), p=0.5),
+        # A.HorizontalFlip(p=0.5),
         A.Lambda(image=preprocessing_fn),
         A.pytorch.ToTensorV2()
 
@@ -33,23 +32,9 @@ def get_transform(preprocessing_fn):
     return A.Compose(train_transform), A.Compose(val_transform)
 
 
-# 안씀
-def to_tensor(x, **kwargs):
-    return x.transpose(2, 0, 1).astype('float32')
-
-
-# 안 씀
-def one_hot_label(mask, classes: int):
-    n_mask = torch.from_numpy(mask).long()
-    shape = n_mask.shape
-    one_hot = torch.zeros((classes,) + shape[0:])
-    n_mask = one_hot.scatter_(1, n_mask.unsqueeze(0), 1.0)
-    return n_mask
-
-
 class CustomDataLoader(Dataset):
     """COCO format"""
-    CLASSES = ['Backgroud', 'General trash', 'Paper', 'Paper pack', 'Metal', 'Glass', 'Plastic', 'Styrofoam',
+    CLASSES = ['Background', 'General trash', 'Paper', 'Paper pack', 'Metal', 'Glass', 'Plastic', 'Styrofoam',
                'Plastic bag', 'Battery', 'Clothing']
 
     def __init__(self, data_dir, mode='train', transform=None):
