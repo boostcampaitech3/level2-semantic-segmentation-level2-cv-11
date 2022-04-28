@@ -45,6 +45,7 @@ def concat_config(arg, config):
     config['metric'] = arg.metric
     config['loss'] = arg.loss
     config['save_interval'] = arg.save_interval
+    config['wandb_plot'] = arg.wandb_plot
 
     return config
 
