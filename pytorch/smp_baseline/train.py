@@ -98,7 +98,7 @@ def main():
             train_f1_score += f1_score.item()
             train_recall += recall.item()
             train_precision += precision.item()
-            break
+
             pbar.set_postfix(
                 Train_Loss=f" {train_loss / (i + 1):.3f}",
                 Train_Iou=f" {train_miou_score / (i + 1):.3f}",
@@ -181,7 +181,7 @@ def main():
                     os.remove(ckpt_path)
                 except:
                     pass
-                ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_miou_{best_score:.4f}.pth')
+                ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_miou_{(best_score/len(val_loader)):.4f}.pth')
                 torch.save(model.state_dict(), ckpt_path)
         if not args.metric:
             if best_loss > val_loss:
@@ -190,7 +190,7 @@ def main():
                     os.remove(ckpt_path)
                 except:
                     pass
-                ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_loss_{best_loss:.4f}.pth')
+                ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_loss_{(best_loss/len(val_loader)):.4f}.pth')
                 torch.save(model.state_dict(), ckpt_path)
         if (epoch + 1) % args.save_interval == 0:
             ckpt_fpath = os.path.join(args.save_dir, 'latest.pth')
