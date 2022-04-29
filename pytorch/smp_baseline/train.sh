@@ -1,1 +1,1 @@
-python train.py --name effb4_Unet_new --metric --wandb_plot
+python train.py --name effb3_UnetPlusPlus --metric

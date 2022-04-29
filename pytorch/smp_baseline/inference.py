@@ -21,6 +21,7 @@ def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', type=str, default='/opt/ml/input/data')
     parser.add_argument('--model-dir', type=str)
+    parser.add_argument('--ckpt-name', type=str)
     args = parser.parse_args()
     return args
 
@@ -33,6 +34,7 @@ def load_config():
     config = Munch(config)
     config.model_dir = args.model_dir
     config.data_dir = args.data_dir
+    config.ckpt_name = args.ckpt_name
     return config
 
 
@@ -50,7 +52,7 @@ def main():
                                     transform=val_transform)
     test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, num_workers=args.num_worker,
                                  collate_fn=collate_fn, pin_memory=True)
-    model_dir = os.path.join(args.model_dir, 'latest.pth')
+    model_dir = os.path.join(args.model_dir, args.ckpt_name)
     model.load_state_dict(torch.load(model_dir))
     model.to(device)
 
@@ -80,7 +82,7 @@ def main():
         print("End prediction.")
         file_names = [y for x in file_name_list for y in x]
 
-    submission = pd.read_csv('/opt/ml/input/sample_submission.csv', index_col=None)
+    submission = pd.DataFrame(columns={'image_id', 'PredictionString'})
     for file_name, string in zip(file_names, preds_array):
         submission = submission.append(
             {"image_id": file_name, "PredictionString": ' '.join(str(e) for e in string.tolist())},

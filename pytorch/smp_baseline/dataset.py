@@ -20,11 +20,13 @@ def get_transform(preprocessing_fn):
     train_transform = [
         # A.RandomResizedCrop(512, 512, (0.75, 1.0), p=0.5),
         # A.HorizontalFlip(p=0.5),
+        A.Resize(width=256, height=256),
         A.Lambda(image=preprocessing_fn),
         A.pytorch.ToTensorV2()
 
     ]
     val_transform = [
+        A.Resize(width=256, height=256),
         A.Lambda(image=preprocessing_fn),
         A.pytorch.ToTensorV2()
     ]

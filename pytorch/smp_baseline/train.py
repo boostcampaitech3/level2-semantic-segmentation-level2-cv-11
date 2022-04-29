@@ -53,7 +53,7 @@ def main():
     model.to(args.device)
     # Loss
     criterion = get_loss(args.criterion)
-    optimizer = AdamW(model.parameters(), lr=args.lr)
+    optimizer = Adam(model.parameters(), lr=args.lr)
     scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-4)
 
     # Wandb init
@@ -70,6 +70,7 @@ def main():
     device = args.device
     best_loss = 9999999.0
     best_score = 0.0
+    early_stopping_count = 0
     for epoch in range(1, args.epoch + 1):
         model.train()
         train_loss, train_miou_score, train_accuracy = 0, 0, 0
@@ -183,6 +184,7 @@ def main():
                     pass
                 ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_miou_{(best_score/len(val_loader)):.4f}.pth')
                 torch.save(model.state_dict(), ckpt_path)
+                early_stopping_count = 0
         if not args.metric:
             if best_loss > val_loss:
                 best_loss = val_loss
@@ -195,7 +197,11 @@ def main():
         if (epoch + 1) % args.save_interval == 0:
             ckpt_fpath = os.path.join(args.save_dir, 'latest.pth')
             torch.save(model.state_dict(), ckpt_fpath)
-
+        early_stopping_count+=1
+        print(f"Early stopping counter {early_stopping_count}/{10} ")
+        if early_stopping_count>10:
+            print("Early Stopped ..")
+            break
 
 if __name__ == "__main__":
     main()
