@@ -43,7 +43,7 @@ def main(args):
         print("Train mode..")
 
         if args["WANDB_PLOT"]:
-            wandb.init(project="semantic-segmentation", entity="canvas11", name = f"NAME-{args['MODEL']}-aug")
+            wandb.init(project="semantic-segmentation", entity="canvas11", name = f"NAME-{args['MODEL']}")
 
         train_dataset = TrashDataset(data_dir=args["TRAIN_JSON_PATH"], mode='train', transform=get_train_transform(args))
         val_dataset = TrashDataset(data_dir=args["VALID_JSON_PATH"], mode='val', transform=get_valid_transform(args))
