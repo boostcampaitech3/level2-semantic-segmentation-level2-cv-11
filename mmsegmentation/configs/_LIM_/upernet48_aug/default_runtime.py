@@ -8,7 +8,7 @@ log_config = dict(
             type="WandbLoggerHook",
             init_kwargs=dict(
                 project="mmseg",
-                name="LIM-Swin48-aug2", #FIXME
+                name="LIM", #FIXME
                 entity="canvas11",
             ),
         ),

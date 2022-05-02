@@ -21,14 +21,11 @@ palette = [
     [0, 128, 64],[128, 0, 0],[64, 0, 128],
     [64, 0, 192],[192, 128, 64],[192, 192, 128],[64, 64, 128],[128, 0, 192],
 ]
-
-imscale = [(x,x) for x in range(512, 1024+1, 128)]
-
 crop_size = (512, 512)
 train_pipeline = [
     dict(type="LoadImageFromFile"),
     dict(type="LoadAnnotations"),
-    dict(type="Resize", img_scale=imscale, multiscale_mode='value', keep_ratio=True),
+    dict(type="Resize", img_scale=(512, 512), ratio_range=(0.5, 2.0)),
     dict(type="RandomCrop", crop_size=crop_size, cat_max_ratio=0.75),
     dict(type="RandomFlip", prob=0.5),
     dict(type="PhotoMetricDistortion"),
