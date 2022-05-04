@@ -11,6 +11,7 @@ from loss import get_loss
 from model import build_model
 from utils import *
 from torch.cuda.amp import GradScaler, autocast
+from collections import deque
 
 warnings.filterwarnings('ignore')
 
@@ -72,6 +73,8 @@ def main():
     device = args.device
     best_loss = 9999999.0
     best_score = 0.0
+    saved_model_list = deque()
+
     for epoch in range(1, args.epoch + 1):
         model.train()
         train_loss, train_miou_score, train_accuracy = 0, 0, 0
@@ -182,20 +185,20 @@ def main():
         if args.metric:
             if best_score < val_miou_score:
                 best_score = val_miou_score
-                try:
-                    os.remove(ckpt_path)
-                except:
-                    pass
                 ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_miou_{(best_score/len(val_loader)):.4f}.pth')
+                saved_model_list.append(ckpt_path)
+                if len(saved_model_list)>5:
+                    remove_model_ckpt = saved_model_list.popleft()
+                    os.remove(remove_model_ckpt)
                 torch.save(model.state_dict(), ckpt_path)
         if not args.metric:
             if best_loss > val_loss:
                 best_loss = val_loss
-                try:
-                    os.remove(ckpt_path)
-                except:
-                    pass
                 ckpt_path = os.path.join(args.save_dir, f'epoch{epoch}_best_loss_{(best_loss/len(val_loader)):.4f}.pth')
+                saved_model_list.append(ckpt_path)
+                if len(saved_model_list)>5:
+                    remove_model_ckpt = saved_model_list.popleft()
+                    os.remove(remove_model_ckpt)
                 torch.save(model.state_dict(), ckpt_path)
         if (epoch + 1) % args.save_interval == 0:
             ckpt_fpath = os.path.join(args.save_dir, 'latest.pth')
