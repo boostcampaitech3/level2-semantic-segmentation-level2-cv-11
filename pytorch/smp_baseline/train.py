@@ -82,7 +82,6 @@ def main():
             image, mask = data
             image = torch.stack(image).float().to(device)
             mask = torch.stack(mask).long().to(device)
-            output = model(image)
 
             optimizer.zero_grad()
             with autocast(True):
