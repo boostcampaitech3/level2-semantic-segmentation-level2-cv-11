@@ -10,6 +10,7 @@ from dataset import load_dataset
 from loss import get_loss
 from model import build_model
 from utils import *
+from torch.cuda.amp import GradScaler, autocast
 
 warnings.filterwarnings('ignore')
 
@@ -55,10 +56,11 @@ def main():
     criterion = get_loss(args.criterion)
     optimizer = AdamW(model.parameters(), lr=args.lr)
     scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=100, eta_min=1e-4)
+    scaler = GradScaler(enabled=True)
 
     # Wandb init
     if args.wandb_plot:
-        wandb.init(project="semantic-segmentation", entity="canvas11", name=f"NAME-{args.name}")
+        wandb.init(project="semantic-segmentation", entity="canvas11", name=f"LEE-{args.name}")
         wandb.config = {
             "learning_rate": args.lr,
             "encoder": args.encoder,
@@ -83,9 +85,13 @@ def main():
             output = model(image)
 
             optimizer.zero_grad()
-            loss = criterion(output, mask)
-            loss.backward()
-            optimizer.step()
+            with autocast(True):
+                output = model(image)
+                loss = criterion(output, mask)
+
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
             train_loss += loss.item()
 
