@@ -60,7 +60,7 @@ def main():
 
     # Wandb init
     if args.wandb_plot:
-        wandb.init(project="semantic-segmentation", entity="canvas11", name=f"LEE-{args.name}")
+        wandb.init(project="semantic-segmentation", entity="canvas11", name=f"NAME-{args.name}")
         wandb.config = {
             "learning_rate": args.lr,
             "encoder": args.encoder,
