@@ -8,7 +8,7 @@ log_config = dict(
             type="WandbLoggerHook",
             init_kwargs=dict(
                 project="mmseg",
-                name="LIM-upernetswin-fold4", #FIXME
+                name="LIM-DPT-baseline", #FIXME
                 entity="canvas11",
             ),
         ),

@@ -31,6 +31,6 @@ lr_config = dict(
 )
 
 # runtime settings
-runner = dict(type="EpochBasedRunner", max_epochs=100)
-checkpoint_config = dict(max_keep_ckpts=2, by_epoch=True, interval=10)
+runner = dict(type="EpochBasedRunner", max_epochs=90)
+checkpoint_config = dict(max_keep_ckpts=2, by_epoch=True, interval=5)
 evaluation = dict(interval=1, metric="mIoU", pre_eval=True)
