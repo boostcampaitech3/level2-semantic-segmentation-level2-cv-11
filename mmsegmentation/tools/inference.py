@@ -23,8 +23,10 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # FIXME
-model_cfg = '/opt/ml/input/level2-semantic-segmentation-level2-cv-11/mmsegmentation/configs/_LIM_/upernet48/upernet_swin48.py'
-ckpt = '/opt/ml/input/level2-semantic-segmentation-level2-cv-11/mmsegmentation/work_dirs/upernet48/latest.pth'
+# model_cfg = '/opt/ml/input/level2-semantic-segmentation-level2-cv-11/mmsegmentation/configs/_LIM_/upernet48/upernet_swin48.py'
+# ckpt = '/opt/ml/input/level2-semantic-segmentation-level2-cv-11/mmsegmentation/work_dirs/upernet_swin48/latest.pth'
+model_cfg = '/opt/ml/input/level2-semantic-segmentation-level2-cv-11/mmsegmentation/configs/_LIM_/dpt/boost_dpt.py'
+ckpt = '/opt/ml/input/level2-semantic-segmentation-level2-cv-11/mmsegmentation/work_dirs/boost_dpt/latest.pth'
 # ckpt = ''
 # ckpt = ''
 

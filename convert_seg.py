@@ -177,9 +177,9 @@ def main():
         mkdir_or_exist(dir)
 
     # copy images
-    # copy_images(TRAINJSON, dir_lists[0])
-    # copy_images(VALJSON, dir_lists[1])
-    # copy_images(TESTJSON, dir_lists[-1])
+    copy_images(TRAINJSON, dir_lists[0])
+    copy_images(VALJSON, dir_lists[1])
+    copy_images(TESTJSON, dir_lists[-1])
 
     # create masks (annotations)
     create_mask(TRAINJSON, dir_lists[2])
